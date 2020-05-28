@@ -169,10 +169,35 @@ namespace Testing_Form
             foreach (string[] arStr in dbcmd.getValues("SELECT CONCAT(`last_name`,\", \",`first_name`,\" \",`middle_name`) FROM `tbl_instrctr` ORDER BY `last_name` ASC") )
             {
                 foreach (string s in arStr) {
-                    //Console.WriteLine(strdata);
-                    instructor_dropdown.Items.Add(s);
+                    //SELECT COUNT(*) FROM `sstss_data`.`tbl_class` WHERE `fk_day` = '"+day+"' AND  `fk_instructor`= '"+instructor+"' AND `fk_time` >= '1' AND `fk_etime` <='54'
+                    instructor_dropdown.Items.Add(s);                    
                 }
             }
+        }
+
+        private void instructor_dropdown_TextChanged(object sender, EventArgs e)
+        {            
+            instructor = dbcmd.getData("SELECT `instructor_id` FROM `sstss_data`.`tbl_instrctr` WHERE CONCAT(`last_name`,\", \",`first_name`,\" \",`middle_name`) = '" + instructor_dropdown.Text + "'");
+            end_time = null;
+            start_time = null;
+            room = null;
+            checkAvailability();
+        }
+
+        private void checkAvailability()
+        {
+            int classcount=0;
+            ArrayList occupiedtime = dbcmd.getIntValues("SELECT `fk_time`,`fk_etime` FROM `sstss_data`.`tbl_class` WHERE `fk_day` = '" + day + "' AND  `fk_instructor`= '" + instructor + "' AND `fk_time` >= '1' AND `fk_etime` <='54'"),
+                          temp = new ArrayList();
+            for (int i = 0; i<occupiedtime.Count;i++)
+            {
+                //int val1 = occupiedtime(i)[0];
+            }
+            Console.WriteLine(instructor_dropdown.Text+" class Count: "+ classcount);
+            if(classcount==0)            
+                instructor_dropdown.Color = Color.Red;
+            else
+                instructor_dropdown.Color = Color.Purple;
         }
 
         private void room_dropdown_DropDown(object sender, EventArgs e)
@@ -306,14 +331,6 @@ namespace Testing_Form
             return baselist;
         }
 
-
-        private void instructor_dropdown_TextChanged(object sender, EventArgs e)
-        {
-            instructor = dbcmd.getData("SELECT `instructor_id` FROM `sstss_data`.`tbl_instrctr` WHERE CONCAT(`last_name`,\", \",`first_name`,\" \",`middle_name`) = '" + instructor_dropdown.Text + "'");
-            end_time = null;
-            start_time = null;
-            room = null;
-        }
 
         private void end_time_dropdown_SelectedIndexChanged(object sender, EventArgs e)
         {
